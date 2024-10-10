@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  uuid       String?      @unique
+  name       String?
+  email      String       @unique
+  password   String?
+  phone      String?
+  avatar     String?
+  github     String?
+  address    String?
+  birth      DateTime     @default(now())
+  state      State?
+  socials    Socials?
+  updatedAt  DateTime     @updatedAt
+  createdAt  DateTime     @default(now())
+  Educations Educations[]
+  Supply     Supply[]
+  Project    Project[]
+  Experience Experience[]
+  Resume     Resume?
+}
+
+model State {
+  id                    Int      @id @default(autoincrement())
+  user                  User     @relation(fields: [userId], references: [id])
+  userId                Int      @unique()
+  Years_of_experience   Int      @default(0)
+  Projects_completed    Int      @default(0)
+  Technologies_mastered Int      @default(0)
+  Code_commits          Int      @default(0)
+  updatedAt             DateTime @updatedAt
+  createdAt             DateTime @default(now())
+}
+
+model Socials {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+  github    String?
+  document  String?
+  bilibili  String?
+  tiktok    String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Educations {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  start       DateTime?
+  end         DateTime?
+  institution String?
+  degree      String?
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+}
+
+model Experience {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  start     DateTime?
+  end       DateTime?
+  company   String?
+  position  String?
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+}
+
+model Supply {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  title       String
+  description String
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  nanoid      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  title       String?
+  description String?
+  stack       Json?
+  github      String?
+  live        String?
+  image       String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Resume {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+  name      String?
+  path      String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
